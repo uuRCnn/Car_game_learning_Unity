@@ -9,6 +9,8 @@ public class ArabaHareket : MonoBehaviour
 {
     private bool oyunBitti = false;
     public int puan = 0;
+    private bool aTuşunaBasıldı = false;
+    private bool dTuşunaBasıldı = false;
     void Start()
     {
         puan = 0;
@@ -17,29 +19,45 @@ public class ArabaHareket : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (oyunBitti == false)
-        {
-            GetComponent<Rigidbody>().AddForce(UnityEngine.Vector3.left * 20, ForceMode.Force);
-        }
-        else if (oyunBitti == true)
-        {
-            GetComponent<Rigidbody>().AddForce(UnityEngine.Vector3.zero);
-        }
-
-        if (GetComponent<Rigidbody>().position.x <= 90)
-        {
-            GetComponent<Rigidbody>().velocity = UnityEngine.Vector3.zero;
-            Invoke("restart", 3f);
-            oyunBitti = true;
-        }
         if (Input.GetKey("d") && oyunBitti == false)
         {
-            GetComponent<Rigidbody>().AddForce(0,0,10);
+            dTuşunaBasıldı = true;
         }
 
         if (Input.GetKey("a") && oyunBitti == false)
         {
-            GetComponent<Rigidbody>().AddForce(0,0,-10);
+            aTuşunaBasıldı = true;
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        var compenent_rb = GetComponent<Rigidbody>();
+        if (oyunBitti == false)
+        {
+            compenent_rb.velocity = new UnityEngine.Vector3(-20, 0, compenent_rb.velocity.z);
+            // compenent_rb.AddForce(UnityEngine.Vector3.left * 160, ForceMode.Force);
+        }
+        else if (oyunBitti == true)
+        {
+            compenent_rb.AddForce(UnityEngine.Vector3.zero);
+        }
+        
+        if (dTuşunaBasıldı)
+        {
+            compenent_rb.AddForce(0,0,120);
+            dTuşunaBasıldı = false;
+        }
+        if (aTuşunaBasıldı)
+        {
+            compenent_rb.AddForce(0,0,-120);
+            aTuşunaBasıldı = false;
+        }
+        if (compenent_rb.position.x <= 65)
+        {
+            compenent_rb.velocity = UnityEngine.Vector3.zero;
+            Invoke("restart", 3f);
+            oyunBitti = true;
         }
     }
 
